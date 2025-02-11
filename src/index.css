@@ -1,0 +1,48 @@
+/* index.css */
+@import "tailwindcss";
+
+
+@layer components {
+  .sidebar-transition {
+    transition-property: width;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    z-index: 10;
+  }
+  
+  .main-content {
+    transition-property: margin-left;
+    transition-duration: 300ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    backface-visibility: hidden;
+    transform: translateZ(0);
+    will-change: margin-left;
+    padding-left: 1rem;
+  }
+}
+/* Force hardware acceleration */
+@supports (transform: translateZ(0)) {
+  .main-content {
+    transform: translateZ(0);
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 2px;
+  height: 2px;
+}
+::-webkit-scrollbar-track {
+  background-color: #f3f4f6;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #d1d5db;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af;
+}
+
+
