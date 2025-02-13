@@ -97,17 +97,12 @@ const HomePage: React.FC = () => {
     }
   };
 
-  // New function to save the transcript to PocketBase under this user’s unique ID
   const handleSave = async () => {
     if (!transcript) return;
     try {
-      // If your relation field is named "user", assign it here.
-      // If it expects an array (in case of single-item relation it still can be an array),
-      // you might need to pass user: [userId]
       const record = await pb.collection("transcriptions").create({
         transcript: transcript,
-        user: userId, // Ensure your collection's field name matches; if it's "user", not "userId"
-        // Alternatively, if your field expects an array: user: [userId]
+        user: userId,
       });
       console.log("Transcription saved successfully:", record);
     } catch (error) {
@@ -116,73 +111,105 @@ const HomePage: React.FC = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-pulse text-blue-600 text-xl">Loading...</div>
+      </div>
+    );
   }
   if (!isLoggedIn) {
-    return <div>Please log in to access this page.</div>;
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="bg-red-50 p-6 rounded-lg shadow-md">
+          <p className="text-red-600 text-lg">
+            Please log in to access this page.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="min-h-screen p-6">
-      <header className="mb-8">
-        <h1 className="text-4xl font-bold text-gray-900">AIDOC</h1>
-        <p className="mt-2 text-lg text-gray-600">
-          Manage your audio recordings and sessions. Welcome, {user?.email}!
-          <br />
-          Your User ID (from URL): {userId}
-        </p>
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white px-4 sm:px-6 py-8">
+      <header className="max-w-4xl mx-auto mb-8">
+        <div className="flex items-center gap-4 mb-4">
+          {/* <img
+            src="/medical-logo.png"
+            alt="Medical Logo"
+            className="h-12 w-auto"
+          /> */}
+          <h1 className="text-3xl sm:text-4xl font-bold text-blue-900">
+            Aidoc
+          </h1>
+        </div>
+        <div className="bg-white rounded-lg p-4 shadow-sm">
+          <p className="text-gray-700">
+            Welcome, Dr. {user?.email}
+            <span className="text-sm text-gray-500 block mt-1">
+              Session ID: {userId}
+            </span>
+          </p>
+        </div>
       </header>
 
-      {/* Recording Card */}
-      <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 mb-8 w-full">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              New Recording
-            </h2>
-            <p className="text-gray-500">
-              {isRecording ? "Recording in progress..." : "Ready to record"}
-            </p>
+      <main className="max-w-4xl mx-auto space-y-6">
+        {/* Recording Card */}
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 transition-all hover:shadow-xl">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-semibold text-blue-900 mb-2">
+                Voice Recording
+              </h2>
+              <p className="text-gray-600">
+                {isRecording
+                  ? "Recording in progress..."
+                  : "Ready to record patient notes"}
+              </p>
+            </div>
+            <button
+              onClick={handleRecord}
+              className={`w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-lg transition-all transform hover:scale-105 ${
+                isRecording
+                  ? "bg-red-500 hover:bg-red-600"
+                  : "bg-blue-600 hover:bg-blue-700"
+              } text-white shadow-md`}
+            >
+              <Mic className="w-5 h-5" />
+              <span>{isRecording ? "Stop Recording" : "Start Recording"}</span>
+            </button>
           </div>
-          <button
-            onClick={handleRecord}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg transition-colors ${
-              isRecording
-                ? "bg-red-500 hover:bg-red-600"
-                : "bg-blue-600 hover:bg-blue-700"
-            } text-white`}
-          >
-            <Mic className="w-5 h-5" />
-            <span>{isRecording ? "Stop Recording" : "Start Recording"}</span>
-          </button>
         </div>
-      </div>
 
-      {/* Transcription Card */}
-      <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 w-full relative">
-        <h2 className="text-xl font-semibold text-gray-900 mb-4">
-          Transcription
-        </h2>
-        {isTranscribing ? (
-          <Loading />
-        ) : (
-          <div className="relative min-h-[200px]">
-            <p className="text-gray-600 whitespace-pre-wrap p-4 rounded-lg bg-gray-50">
-              {transcript || "Start recording to see live transcription"}
-            </p>
-            {transcript && (
-              <div className="absolute bottom-4 right-4">
-                <button
-                  className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
-                  onClick={handleSave}
-                >
-                  Save
-                </button>
+        {/* Transcription Card */}
+        <div className="bg-white rounded-xl shadow-lg border border-gray-100 p-6 transition-all hover:shadow-xl">
+          <h2 className="text-xl font-semibold text-blue-900 mb-4">
+            Medical Transcription
+          </h2>
+          {isTranscribing ? (
+            <div className="flex justify-center py-12">
+              <Loading />
+            </div>
+          ) : (
+            <div className="relative min-h-[200px]">
+              <div className="rounded-lg bg-gray-50 p-6 border border-gray-100">
+                <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+                  {transcript || "Begin recording to transcribe patient notes"}
+                </p>
               </div>
-            )}
-          </div>
-        )}
-      </div>
+              {transcript && (
+                <div className="mt-4 flex justify-end">
+                  <button
+                    className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-all transform hover:scale-105 shadow-md"
+                    onClick={handleSave}
+                  >
+                    Save to Patient Record
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </main>
     </div>
   );
 };

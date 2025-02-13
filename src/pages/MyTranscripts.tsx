@@ -45,63 +45,89 @@ const MyTranscripts: React.FC = () => {
   }, [userId]);
 
   if (loading)
-    return <div className="p-6 text-center">Loading transcripts...</div>;
-  if (error) return <div className="p-6 text-center text-red-600">{error}</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-pulse text-blue-600 text-xl">
+          Loading transcripts...
+        </div>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-red-600 text-xl bg-red-50 p-4 rounded-lg shadow">
+          {error}
+        </div>
+      </div>
+    );
   if (transcripts.length === 0)
-    return <div className="p-6 text-center">You have no transcripts yet.</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-gray-600 text-xl">
+          You have no transcripts yet.
+        </div>
+      </div>
+    );
 
   return (
-    <div className="min-h-screen p-6">
-      <h1 className="text-3xl font-bold mb-6">My Transcripts</h1>
-      <div className="overflow-x-auto">
-        <div className="inline-block min-w-full overflow-hidden rounded-lg shadow-lg">
-          <table className="min-w-full">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                  Time
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                  Transcription
-                </th>
-                <th className="px-6 py-3 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {transcripts.map((item) => {
-                const createdDate = new Date(item.created);
-                return (
-                  <tr key={item.id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {createdDate.toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                      {createdDate.toLocaleTimeString()}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-gray-900">
-                      {item.transcript}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <button
-                        onClick={() =>
-                          navigate(`/${userId}/summarize/${item.id}`)
-                        }
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-md hover:shadow-lg"
-                      >
-                        <Bot className="w-5 h-5" />
-                        <span className="font-semibold">Summarize</span>
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-blue-800 text-center md:text-left">
+          Medical Transcripts
+        </h1>
+        <div className="bg-white rounded-xl shadow-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-blue-600">
+                <tr>
+                  <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                    Date
+                  </th>
+                  <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                    Time
+                  </th>
+                  <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                    Transcription
+                  </th>
+                  <th className="px-4 md:px-6 py-4 text-left text-sm font-semibold text-white uppercase tracking-wider">
+                    Action
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {transcripts.map((item) => {
+                  const createdDate = new Date(item.created);
+                  return (
+                    <tr
+                      key={item.id}
+                      className="hover:bg-blue-50 transition-colors"
+                    >
+                      <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {createdDate.toLocaleDateString()}
+                      </td>
+                      <td className="px-4 md:px-6 py-4 whitespace-nowrap text-sm text-gray-700">
+                        {createdDate.toLocaleTimeString()}
+                      </td>
+                      <td className="px-4 md:px-6 py-4 text-sm text-gray-900">
+                        <div className="line-clamp-3">{item.transcript}</div>
+                      </td>
+                      <td className="px-4 md:px-6 py-4 whitespace-nowrap">
+                        <button
+                          onClick={() =>
+                            navigate(`/${userId}/summarize/${item.id}`)
+                          }
+                          className="w-full md:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
+                        >
+                          <Bot className="w-4 h-4" />
+                          <span className="font-medium text-sm">Summarize</span>
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>

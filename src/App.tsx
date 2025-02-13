@@ -22,12 +22,12 @@
 //         {/* Landing Page shown on the root */}
 //         <Route path="/" element={<LandingPage />} />
 //         <Route path="/login" element={<Login />} />
-//         {/* New Register route */}
 //         <Route
 //           path="/register"
 //           element={<Register onRegisterSuccess={() => {}} />}
 //         />
-//         <Route path="my-transcripts" element={<MyTranscripts />} />
+//         {/* Optionally you can remove this duplicate MyTranscripts route if it’s handled below */}
+//         <Route path="/my-transcripts" element={<MyTranscripts />} />
 
 //         <Route
 //           path="/:userId/*"
@@ -46,8 +46,9 @@
 //                   <Route index element={<HomePage />} />
 //                   <Route path="profile" element={<ProfilePage />} />
 //                   <Route path="my-transcripts" element={<MyTranscripts />} />
+//                   {/* Adjusted the path here to be relative */}
 //                   <Route
-//                     path="/:userId/summarize/:transcriptId"
+//                     path="summarize/:transcriptId"
 //                     element={<SummarizePage />}
 //                   />
 //                   <Route path="settings" element={<SettingsPage />} />
@@ -95,9 +96,10 @@ const App: React.FC = () => {
           path="/register"
           element={<Register onRegisterSuccess={() => {}} />}
         />
-        {/* Optionally you can remove this duplicate MyTranscripts route if it’s handled below */}
+        {/* You can optionally have a duplicate MyTranscripts route if needed */}
         <Route path="/my-transcripts" element={<MyTranscripts />} />
 
+        {/* Authenticated Section */}
         <Route
           path="/:userId/*"
           element={
@@ -106,16 +108,20 @@ const App: React.FC = () => {
                 collapsed={sidebarCollapsed}
                 setCollapsed={setSidebarCollapsed}
               />
+              {/* 
+                  IMPORTANT UPDATE:
+                  On mobile by default we use "ml-0" (no margin) so content spans full width.
+                  On screens sm and above we add margin-left: either "ml-20" if sidebar is collapsed or "ml-64" if expanded.
+              */}
               <div
                 className={`${
-                  sidebarCollapsed ? "ml-20" : "ml-64"
+                  sidebarCollapsed ? "ml-0 sm:ml-20" : "ml-0 sm:ml-64"
                 } transition-all duration-300 p-4`}
               >
                 <Routes>
                   <Route index element={<HomePage />} />
                   <Route path="profile" element={<ProfilePage />} />
                   <Route path="my-transcripts" element={<MyTranscripts />} />
-                  {/* Adjusted the path here to be relative */}
                   <Route
                     path="summarize/:transcriptId"
                     element={<SummarizePage />}
@@ -125,7 +131,6 @@ const App: React.FC = () => {
                     path="logout"
                     element={<Logout handleLogout={logout} />}
                   />
-                  {/* Other nested routes (profile, settings, etc.) */}
                 </Routes>
               </div>
             </div>
